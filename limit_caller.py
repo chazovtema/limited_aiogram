@@ -18,18 +18,17 @@ class LimitCaller():
         
     
     async def call(self, chat: int, coro: Coroutine):
-        
         async with self.main_limiter:
             limiter_list = self.chats.get(chat)
-            
             if not limiter_list:
-                limiter = Limiter(3, 10)
+                limiter = Limiter(0.333, 20)
                 task = asyncio.create_task(self.delete_task(chat))
-                self.chats[chat] = (limiter, time(), task)
+                self.chats[chat] = [limiter, time(), task]
+                async with limiter:
+                    return await coro
             else:
-                task.cancel()
+                limiter_list[2].cancel()
                 limiter_list[1] = time()
                 limiter_list[2] = asyncio.create_task(self.delete_task(chat))
-                async with limiter:
-                    
+                async with limiter_list[0]:
                     return await coro
