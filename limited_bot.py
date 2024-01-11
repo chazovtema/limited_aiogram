@@ -23,3 +23,11 @@ class RestrictedBot(Bot):
             return await self.caller.call(method.chat_id, coro)
         else:
             return await coro
+
+def path_bot():
+    
+    """Патчит бота в aiogram, эти изменения не обратимы"""
+    
+    Bot.__call__ = RestrictedBot.__call__
+    
+    
