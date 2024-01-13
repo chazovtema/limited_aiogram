@@ -5,7 +5,7 @@ import asyncio
 
 from limiter import Limiter
 
-class LimitCaller():
+class LimitCaller:
     
     def __init__(self) -> None:
         self.main_limiter = Limiter(30)
@@ -18,10 +18,11 @@ class LimitCaller():
         
     
     async def call(self, chat: int, coro: Coroutine):
+        
         async with self.main_limiter:
             limiter_list = self.chats.get(chat)
             if not limiter_list:
-                limiter = Limiter(0.333, 20)
+                limiter = Limiter(1, 3)
                 task = asyncio.create_task(self.delete_task(chat))
                 self.chats[chat] = [limiter, time(), task]
                 async with limiter:
