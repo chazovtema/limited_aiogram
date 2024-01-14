@@ -1,12 +1,10 @@
 from typing import Optional, TypeVar
 from aiogram.client.session.base import BaseSession
-from copy import copy
-from functools import wraps
 
 from aiogram.methods import TelegramMethod
 from aiogram import Bot
 
-from limit_caller import LimitCaller
+from .limit_caller import LimitCaller
 
 T = TypeVar("T")
 
