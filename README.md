@@ -31,6 +31,10 @@ import limit_aiogram
 bot = limit_aiogram.LimitedBot('your token')
 ```
 
+# Installation
+
+`pip install limited_aiogram`
+
 # Work in progress
 
 A restriction for sending messages to groups will be added soon
