@@ -13,11 +13,13 @@ T = TypeVar("T")
 class LimitedBot(Bot):
     
     async def __call__(self, method: TelegramMethod[T], request_timeout: Optional[int] = None):
-        if not hasattr(self, 'caller'):
-             self.caller = LimitCaller()
+        caller = self.__dict__.get('caller')
+        if not caller:
+            caller = LimitCaller()
+            self.caller = caller
         coro = self.session(self, method, timeout=request_timeout)
         if hasattr(method, 'chat_id'):
-            return await self.caller.call(method.chat_id, coro)
+            return await caller.call(method.chat_id, coro)
         else:
             return await coro
 
