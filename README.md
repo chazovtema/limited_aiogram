@@ -10,13 +10,6 @@ Telegram has a number of restrictions for sending messages:
 - 20 requests/sec to group
 - 1 message per second to individual chat
 
-# Main Features
-
-The following restrictions are currently implemented:
-
-- Limit 30 requests per second for all users
--  1 message/sec to individual chats
-
 # Usage
 
 The code below patches the original Bot class from aiogram, these changes are not reversible!
@@ -34,7 +27,3 @@ bot = limit_aiogram.LimitedBot('your token')
 # Installation
 
 `pip install limited_aiogram`
-
-# Work in progress
-
-A restriction for sending messages to groups will be added soon

@@ -6,10 +6,10 @@ def readme():
 
 setup(
   name='limited_aiogram',
-  version='0.1.1',
+  version='0.1.2',
   author='chazovtema',
   author_email = 'chazovtema@mail.ru',
-  description='This is my first module',
+  description='Limit your api calls to avoid  "Flood control exceeded"',
   long_description=readme(),
   long_description_content_type='text/markdown',
   packages=find_packages(),
@@ -20,6 +20,6 @@ setup(
     'Operating System :: OS Independent'
   ],
   keywords= ['aiogram', 'limit'],
-  project_urls={},
+  project_urls={"github": "https://github.com/chazovtema/limited_aiogram"},
   python_requires='>=3.10',
 )
