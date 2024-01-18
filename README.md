@@ -17,7 +17,7 @@ The code below patches the original Bot class from aiogram, these changes are no
 import limit_aiogram
 limit_aiogram.path_bot()
 ```
-It is also possible to use a separate class `LimitedBot``, without changing the original class
+It is also possible to use a separate class `LimitedBot`, without changing the original class
 
 ```python
 import limit_aiogram
