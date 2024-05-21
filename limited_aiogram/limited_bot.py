@@ -6,7 +6,6 @@ from aiogram import Bot
 from .limit_caller import LimitCaller
 
 T = TypeVar("T")
-requarements = 123
 
 class LimitedBot(Bot):
 
@@ -18,8 +17,7 @@ class LimitedBot(Bot):
         """
         coro = self.session(self, method, timeout=request_timeout)
         if hasattr(method, "chat_id") and not isinstance(method, GetChat):
-            chat = await self.get_chat(method.chat_id)
-            return await self.caller.call(chat, coro)
+            return await self.caller.call(method.chat_id, coro)
         else:
             return await coro
 

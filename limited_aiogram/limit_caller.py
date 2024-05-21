@@ -1,8 +1,5 @@
-from time import time
 from typing import Coroutine
-import asyncio
 
-from aiogram.types import Chat
 from cachetools import TTLCache
 from limiter import Limiter
 
@@ -46,10 +43,9 @@ class LimitCaller:
                 async with limiter:
                     return await coro
 
-    async def call(self, chat: Chat, coro: Coroutine):
+    async def call(self, chat_id: int, coro: Coroutine):
         """Call the method"""
 
-        chat_id = chat.id
         if chat_id < 0:
             return await self._call_with_limit(chat_id, coro, self.groups, 0.3333, 20)
         else:
