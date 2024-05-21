@@ -1,5 +1,4 @@
 from typing import Optional, TypeVar
-from aiogram.client.session.base import BaseSession
 
 from aiogram.methods import TelegramMethod, GetChat
 from aiogram import Bot
@@ -7,24 +6,35 @@ from aiogram import Bot
 from .limit_caller import LimitCaller
 
 T = TypeVar("T")
+requarements = 123
 
 class LimitedBot(Bot):
-    
-    async def __call__(self, method: TelegramMethod[T], request_timeout: Optional[int] = None):
-        
+
+    async def _call(
+        self, method: TelegramMethod[T], request_timeout: Optional[int] = None
+    ):
+        """
+        Just to not modify __init__ method
+        """
         coro = self.session(self, method, timeout=request_timeout)
-        if hasattr(method, 'chat_id') and not isinstance(method, GetChat):
-            caller = self.__dict__.get('caller')
-            if not caller:
-                caller = LimitCaller()
-                self.caller = caller
+        if hasattr(method, "chat_id") and not isinstance(method, GetChat):
             chat = await self.get_chat(method.chat_id)
-            return await caller.call(chat, coro)
+            return await self.caller.call(chat, coro)
         else:
             return await coro
 
+    async def __call__(
+        self, method: TelegramMethod[T], request_timeout: Optional[int] = None
+    ):
+        caller = getattr(self, "caller", None)
+        if not caller:
+            caller = LimitCaller()
+            self.caller = caller
+            self.__call__ = LimitedBot._call
+        return await LimitedBot._call(self, method, request_timeout)
+
+
 def path_bot():
-    
     """Patches the bot, these changes are not reversible"""
-    
+
     Bot.__call__ = LimitedBot.__call__
