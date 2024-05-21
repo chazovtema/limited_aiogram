@@ -8,7 +8,7 @@ def readme():
 
 setup(
     name="limited_aiogram",
-    version="1.0",
+    version="1.0.1",
     author="chazovtema",
     author_email="chazovtema@mail.ru",
     description='Limit your api calls to avoid  "Flood control exceeded"',
