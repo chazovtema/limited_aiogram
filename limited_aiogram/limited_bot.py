@@ -32,7 +32,7 @@ class LimitedBot(Bot):
         return await LimitedBot._call(self, method, request_timeout)
 
 
-def path_bot():
+def patch_bot():
     """Patches the bot, these changes are not reversible"""
 
     Bot.__call__ = LimitedBot.__call__
