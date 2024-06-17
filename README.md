@@ -10,20 +10,20 @@ Telegram has a number of restrictions for sending messages:
 - 20 requests/sec to group
 - 1 message per second to individual chat
 
+# Installation
+
+`pip install limited_aiogram`
+
 # Usage
 
 The code below patches the original Bot class from aiogram, these changes are not reversible!
 ```python
-import limit_aiogram
-limit_aiogram.path_bot()
+import limited_aiogram
+limited_aiogram.patch_bot()
 ```
 It is also possible to use a separate class `LimitedBot`, without changing the original class
 
 ```python
-import limit_aiogram
-bot = limit_aiogram.LimitedBot('your token')
+import limited_aiogram
+bot = limited_aiogram.LimitedBot('your token')
 ```
-
-# Installation
-
-`pip install limited_aiogram`
