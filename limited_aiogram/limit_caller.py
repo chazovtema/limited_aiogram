@@ -2,7 +2,7 @@ from typing import Coroutine
 
 from cachetools import TTLCache
 from limiter import Limiter
-
+from .sender import Sender
 
 class LimitCaller:
     __slots__ = ("main_limiter", "chats", "groups")
@@ -11,14 +11,14 @@ class LimitCaller:
         """A class that controls the speed of sending requests."""
 
         self.main_limiter = Limiter(30)
-        self.groups = TTLCache[Limiter](maxsize=9_223_372_036_854_775_807, ttl=60)
-        self.chats = TTLCache[Limiter](maxsize=9_223_372_036_854_775_807, ttl=60)
+        self.groups = TTLCache[int, Sender](maxsize=9_223_372_036_854_775_807, ttl=60)
+        self.chats = TTLCache[int, Sender](maxsize=9_223_372_036_854_775_807, ttl=60)
 
     async def _call_with_limit(
         self,
         chat_id: int,
         coro: Coroutine,
-        storage: TTLCache[Limiter],
+        storage: TTLCache[int, Sender],
         rate: int | float,
         burst: int,
     ):
@@ -33,20 +33,17 @@ class LimitCaller:
         """
 
         async with self.main_limiter:
-            limiter = storage.get(chat_id)
-            if not limiter:
+            sender = storage.get(chat_id)
+            if not sender:
                 limiter = Limiter(rate, burst)
-                storage[chat_id] = limiter
-                async with limiter:
-                    return await coro
-            else:
-                async with limiter:
-                    return await coro
+                sender = Sender(limiter)
+                storage[chat_id] = sender
+            return await sender.send(coro)
 
     async def call(self, chat_id: int, coro: Coroutine):
         """Call the method"""
 
         if chat_id < 0:
-            return await self._call_with_limit(chat_id, coro, self.groups, 0.32, 20)
+            return await self._call_with_limit(chat_id, coro, self.groups, 0.33, 20)
         else:
-            return await self._call_with_limit(chat_id, coro, self.chats, 0.99, 1)
+            return await self._call_with_limit(chat_id, coro, self.chats, 1, 1)
